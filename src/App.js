@@ -1,21 +1,61 @@
-/* 
+ /* 
   Start here and work your way down the nested components.
   Not all files in the project need code added.
   Look at each file to see what props need to be passed!
 */
 
 // Import the state hook
-import React from 'react';
+import React, {useState} from 'react';
 // Import the Posts (plural!) and SearchBar components, since they are used inside App component
+
+import Posts from './components/Posts/Posts'
+import SearchBar from './components/SearchBar/SearchBar'
+
 // Import the dummyData
+import dummyData from "./dummy-data"
+
 import './App.css';
+
+// const puppyColor = (type) => {
+//   const puppy = getPuppy(type)
+//   return puppy.color
+// }
+
+// const getPuppy = (type) => {
+//   const puppies = [{type:"poodle", color: "blue"}]
+//   return puppies.find((item)=>item.type===type)
+  
+// }
 
 const App = () => {
   // Create a state called `posts` to hold the array of post objects, **initializing to dummyData**.
   // This state is the source of truth for the data inside the app. You won't be needing dummyData anymore.
   // To make the search bar work (which is stretch) we'd need another state to hold the search term.
 
+  const [posts,setPosts] = useState(dummyData)
+
+  const addComment = ( text, postId ) => {
+    setPosts(
+      posts.map(item => {
+        if( item.id === postId ){
+
+         const postCopy = {...item}
+         postCopy.comments.push({
+
+          id: 24,
+          username: "yaBoi_spidey",
+          text: text,
+
+         }) 
+         return postCopy
+        }
+        return item
+      })
+    )
+  }  
+
   const likePost = postId => {
+    console.log(postId)
     /*
       This function serves the purpose of increasing the number of likes by one, of the post with a given id.
 
@@ -26,12 +66,18 @@ const App = () => {
       The callback passed into `map` performs the following logic:
         - if the `id` of the post matches `postId`, return a new post object with the desired values (use the spread operator).
         - otherwise just return the post object unchanged.
+
      */
+    setPosts(posts.map((item)=>item.id === postId ? {...item, likes: item.likes + 1} : item) )
   };
 
   return (
     <div className='App'>
       {/* Add SearchBar and Posts here to render them */}
+      <SearchBar />
+      <Posts posts={posts} likePost={likePost} addComment={addComment}/>
+
+      
       {/* Check the implementation of each component, to see what props they require, if any! */}
     </div>
   );
